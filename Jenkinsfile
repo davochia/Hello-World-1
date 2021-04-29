@@ -1,85 +1,33 @@
-pipeline {
-    
-       environment { 
+node {
+    def app
 
-        registry = "mariakritou/casecoursework" 
+    stage('Clone repository') {
+        /* Cloning the Repository to our Workspace */
 
-        registryCredential = 'dockerhub_credentials' 
-
-        dockerImage = '' 
-
+        checkout scm
     }
 
-    agent any
-    
-    triggers {
-      pollSCM '* * * * *'
+    stage('Build image') {
+        /* This builds the actual image */
+
+        app = docker.build("wisekingdavid/casecoursework")
     }
 
-    tools {
-        // Install the Maven version configured as "M3" and add it to the path.
-        maven "M3"
-    }
-
-    stages {
-        stage('Build') {
-            steps {
-                // Get some code from a GitHub repository
-                git 'https://github.com/MariaKritou/Hello-World.git'
-
-                // Run Maven on a Unix agent.
-                sh "mvn -Dmaven.test.failure.ignore=true clean package"
-
-                // To run Maven on a Windows agent, use
-                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
-            }
-
-            post {
-                // If Maven was able to run the tests, even if some of the test
-                // failed, record the test results and archive the jar file.
-                success {
-                    //junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'target/*.jar'
-                }
-            }
-            
-        }
+    stage('Test image') {
         
-        stage('Cloning our Git') { 
+        app.inside {
+            echo "Tests passed"
+        }
+    }
 
-            steps { 
-
-                git 'https://github.com/MariaKritou/Hello-World.git' 
-
-            }
-        } 
-        stage('Building our image') { 
-            steps { 
-                script { 
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER" 
-                }
+    stage('Push image') {
+        /* 
+			You would need to first register with DockerHub before you can push images to your account
+		*/
+        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push("latest")
             } 
-        }
-        stage('Deploy our image') { 
-            steps { 
-                script { 
-                    docker.withRegistry( '', registryCredential ) { 
-                      dockerImage.push() 
-
-                    }
-
-                } 
-
-            }
-
-        } 
-        stage('Cleaning up') { 
-            steps { 
-                sh "docker rmi $registry:$BUILD_NUMBER" 
-            }
-        } 
-        
+                echo "Trying to Push Docker Build to DockerHub"
     }
 }
-
-
