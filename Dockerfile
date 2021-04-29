@@ -1,4 +1,4 @@
 FROM openjdk:8
-COPY ./out/production/HelloWorld/ /tmp
+COPY ../HelloWorld/ /tmp
 WORKDIR /tmp
 ENTRYPOINT ["java","HelloWorld"]
