@@ -14,12 +14,7 @@ node {
         app = docker.build("wisekingdavid/casecoursework")
     }
 
-    stage('Test image') {
-        
-        app.inside {
-            echo "Tests passed"
-        }
-    }
+   
 
     stage('Push image') {
    
