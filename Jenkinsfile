@@ -15,7 +15,7 @@ node {
 
     stage('Test image') {
         
-        app.docker.image.inside {
+        app.docker.inside {
             echo "Tests passed"
         }
     }
