@@ -25,8 +25,8 @@ pipeline{
 			You would need to first register with DockerHub before you can push images to your account
 		*/
         docker.withRegistry('https://registry.hub.docker.com', 'davs-dockerHub') {
-            app.push("${env.BUILD_NUMBER}")
-            app.push("latest")
+            push("${env.BUILD_NUMBER}")
+            push("latest")
             } 
                 echo "Trying to Push Docker Build to DockerHub"
     }
