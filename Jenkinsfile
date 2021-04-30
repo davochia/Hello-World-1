@@ -10,12 +10,12 @@ pipeline{
     stage('Build image') {
         /* This builds the actual image */
 
-        app = docker.build("wisekingdavid/casecoursework")
+        sh docker.build("wisekingdavid/casecoursework")
     }
 
     stage('Test image') {
         
-        app.docker.inside {
+        sh docker.inside {
             echo "Tests passed"
         }
     }
