@@ -1,6 +1,6 @@
-node {
-    def app
-
+pipeline{
+    agent any
+	
     stage('Clone repository') {
         /* Cloning the Repository to our Workspace */
 
