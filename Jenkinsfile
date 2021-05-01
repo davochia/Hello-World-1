@@ -11,14 +11,14 @@ node {
     stage('Build image') {
         /* This builds the actual image */
 
-        app = docker.build("wisekingdavid/casecoursework")
+        app = docker.build("wisekingdavid/casecoursework2")
     }
 
    
 
     stage('Push image') {
    
-        docker.withRegistry('https://registry.hub.docker.com', 'davs-dockerHub') {
+        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
             app.push("${env.BUILD_NUMBER}")
             app.push("latest")
             } 
